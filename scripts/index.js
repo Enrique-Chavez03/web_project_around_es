@@ -56,6 +56,8 @@ const profileDescription = document.querySelector('.profile__description');
 
 const cardsList = document.querySelector('.cards__list');
 
+cardsList.innerHTML = "";
+
 
 // Abrir modal
 function openModal(modalElement) {
@@ -79,105 +81,115 @@ function handleOpenEditModal() {
 
 function handleProfileFormSubmit(evt) {
     evt.preventDefault(); 
-    
-    // Actualizar el perfil con los valores del formulario
     profileTitle.textContent = nameInput.value;
     profileDescription.textContent = descriptionInput.value;
-    
-    // Cerrar el modal después de guardar
     closeModal(editPopup);
 }
 
-// Crear una tarjeta
-function createCard(cardData) {
-    const cardTemplate = document.querySelector('#card-template');
+// Apariencia del boton Like
+function handleLikeButton(likeButton) {
+    likeButton.classList.toggle(`card__loke-button_is-active`);
+}
+
+//Hanlder de eliminacion de tarjeta del DOM
+function handleDeleteCard(cardElement) {
+    cardElement.remove();
+}
+
+//Apertura de modal en imagen
+function handleImageClick(link, name) {
+    const popupImage = imagePopup.querySelector(`.popup__image`);
+    const popupCaption = imagePopup.querySelector(`.popup__caption`);
+    popupImage.src = link;
+    popupImage.alt = name;
+    popupCaption.textContent = name;
+    openModal(imagePopup);
+}
+
+function getCardElement(cardData) {
+    // Parametros para los datos incompletos
+    const { name = "Titulo", link = "https://via.placeholder.com/300x200?text=Imagen+no+disponible" 
+    } = cardData;
+
+    // Obtener Template
+    const cardTemplate = document.querySelector(`#card-template`);
     const cardElement = cardTemplate.content.cloneNode(true);
+
+    const cardImage = cardElement.querySelector(`.card__image`);
+    const cardTitle = cardElement.querySelector(`.card__title`);
+    const likeButton = cardElement.querySelector(`.card__like-button`);
+    const deleteButton = cardElement.querySelector(`card__delete-button`);
+
+
+    cardImage.src = link;
+    cardImage.alt = name;
+    cardTitle.textContent = name;
+
+    likeButton.addEventListener(`click`, () => handleLikeButton(likeButton));
+    deleteButton.addEventListener(`click`, () => 
+        handleDeleteCard(cardElement));
+    cardImage.addEventListener(`click`, () => 
+        handleImageClick(link, name));
     
-    const cardImage = cardElement.querySelector('.card__image');
-    const cardTitle = cardElement.querySelector('.card__title');
-    const likeButton = cardElement.querySelector('.card__like-button');
-    const deleteButton = cardElement.querySelector('.card__delete-button');
-    
-    cardImage.src = cardData.link;
-    cardImage.alt = cardData.name;
-    cardTitle.textContent = cardData.name;
-    
-    // Evento like
-    likeButton.addEventListener('click', () => {
-        likeButton.classList.toggle('card__like-button_is-active');
-    });
-    
-    deleteButton.addEventListener('click', () => {
-        cardElement.remove();
-    });
-    
-    cardImage.addEventListener('click', () => {
-        const popupImage = imagePopup.querySelector('.popup__image');
-        const popupCaption = imagePopup.querySelector('.popup__caption');
-        popupImage.src = cardData.link;
-        popupImage.alt = cardData.name;
-        popupCaption.textContent = cardData.name;
-        openModal(imagePopup);
-    });
-    
+
     return cardElement;
 }
 
+// Funcion para renderizar una tarjeta
+function renderCard(name, link, container) {
+    const cardData = {name, link};
+    const cardElement = getCardElement(cardData);
+    container.prepend(cardElement);
+}
 
+// Render de todas las tarjetas iniciales
 function renderCards() {
     initialCards.forEach(cardData => {
-        const card = createCard(cardData);
-        cardsList.appendChild(card);
+        renderCard(cardData.name, cardData.link, cardsList);
     });
+}
+
+function handleCardFormSubmit(evt) {
+    evt.preventDefault();
+
+    const placeName = document.querySelector(`.popup__input_type_card-name`).value;
+    const linkUrl = document.querySelector(`.popup__input_type_url`).value;
+
+    if(placeName && linkUrl) {
+        renderCard(placeName, linkUrl, cardsList);
+        evt.target.reset();
+        closeModal(newCardPopup);
+    }
 }
 
 // ========== EVENT LISTENERS ==========
 
 editButton.addEventListener('click', handleOpenEditModal);
 
-// Cerrar modal editar perfil
 editCloseButton.addEventListener('click', () => {
     closeModal(editPopup);
 });
 
-// Abrir modal nueva tarjeta
 addButton.addEventListener('click', () => {
+    const newCardForm = document.querySelector(`#new-card-form`);
     newCardForm.reset();
     openModal(newCardPopup);
 });
 
-// Cerrar modal nueva tarjeta
 newCardCloseButton.addEventListener('click', () => {
     closeModal(newCardPopup);
 });
 
-// Cerrar modal imagen
 imageCloseButton.addEventListener('click', () => {
     closeModal(imagePopup);
 });
 
-// ========== MANEJO DE FORMULARIOS ==========
 formEdit.addEventListener('submit', handleProfileFormSubmit);
 
-// Formulario nueva tarjeta
+
 const newCardForm = document.querySelector('#new-card-form');
-newCardForm.addEventListener('submit', (event) => {
+newCardForm.addEventListener('submit', handleCardFormSubmit);
     event.preventDefault();
-    
-    const placeName = document.querySelector('.popup__input_type_card-name').value;
-    const linkUrl = document.querySelector('.popup__input_type_url').value;
-    
-    const newCardData = {
-        name: placeName,
-        link: linkUrl
-    };
-    
-    const newCard = createCard(newCardData);
-    cardsList.prepend(newCard);
-    
-    newCardForm.reset();
-    closeModal(newCardPopup);
-});
 
 const popups = [editPopup, newCardPopup, imagePopup];
 popups.forEach(popup => {
