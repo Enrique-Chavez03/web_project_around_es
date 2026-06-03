@@ -56,8 +56,6 @@ const profileDescription = document.querySelector('.profile__description');
 
 const cardsList = document.querySelector('.cards__list');
 
-cardsList.innerHTML = "";
-
 
 // Abrir modal
 function openModal(modalElement) {
@@ -88,7 +86,7 @@ function handleProfileFormSubmit(evt) {
 
 // Apariencia del boton Like
 function handleLikeButton(likeButton) {
-    likeButton.classList.toggle(`card__loke-button_is-active`);
+    likeButton.classList.toggle(`card__like-button_is-active`);
 }
 
 //Hanlder de eliminacion de tarjeta del DOM
@@ -113,12 +111,12 @@ function getCardElement(cardData) {
 
     // Obtener Template
     const cardTemplate = document.querySelector(`#card-template`);
-    const cardElement = cardTemplate.content.cloneNode(true);
+    const cardElement = cardTemplate.content.firstElementChild.cloneNode(true);
 
     const cardImage = cardElement.querySelector(`.card__image`);
     const cardTitle = cardElement.querySelector(`.card__title`);
     const likeButton = cardElement.querySelector(`.card__like-button`);
-    const deleteButton = cardElement.querySelector(`card__delete-button`);
+    const deleteButton = cardElement.querySelector(`.card__delete-button`);
 
 
     cardImage.src = link;
@@ -189,7 +187,7 @@ formEdit.addEventListener('submit', handleProfileFormSubmit);
 
 const newCardForm = document.querySelector('#new-card-form');
 newCardForm.addEventListener('submit', handleCardFormSubmit);
-    event.preventDefault();
+
 
 const popups = [editPopup, newCardPopup, imagePopup];
 popups.forEach(popup => {
@@ -211,3 +209,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 renderCards();
+
+// Me costo muchos dias hacer este JS pero con un poco de ayuda de herramientas hoy en dia se puede hacer.
+// No se si puedan ayudarme con comentarios para poder mejorar aun más mi logica de programación??
+// Libros, paguinas, herramientas, etc....??
