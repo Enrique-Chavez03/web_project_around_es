@@ -212,4 +212,4 @@ renderCards();
 
 // Me costo muchos dias hacer este JS pero con un poco de ayuda de herramientas hoy en dia se puede hacer.
 // No se si puedan ayudarme con comentarios para poder mejorar aun más mi logica de programación??
-// Libros, paguinas, herramientas, etc....??
+// Libros, paginas, herramientas, etc....??
