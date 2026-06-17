@@ -56,15 +56,95 @@ const profileDescription = document.querySelector('.profile__description');
 
 const cardsList = document.querySelector('.cards__list');
 
+cardsList.innerHTML = ";//Limpiar tarjetas hardcoded"
+
+
+// =========== VALIDACIÓN ==========
+function showInputError(formElement, inputElement, errorMessage) {
+    const errorElement = formElement.querySelector(#${inputElement.id}-error);
+    inputElement.classList.add('popup__input_type_error');
+    errorElement.textContent = errorMessage;
+    errorElement.classList.add('popup__input-error_active');
+}
+
+function hideInputError(formElement, inputElement) {
+    const errorElement = formElement.querySelector(#${inputElement.id}-error);
+    inputElement.classList.remove('popup__input_type_error');
+    errorElement.classList.remove('popup__input-error_active');
+    errorElement.textContent = '';
+}
+
+function checkInputValidity(formElement, inputElement) {
+    f (!inputElement.validity.valid) {
+        if (inputElement.validity.valueMissing) {
+            showInputError(formElement, inputElement, 'Por favor, rellena este campo.');
+        } else if (inputElement.validity.tooShort) {
+            showInputError(formElement, inputElement, Debe tener al menos ${inputElement.minLength} caracteres.);
+        } else if (inputElement.validity.tooLong) {
+            showInputError(formElement, inputElement, Debe tener como máximo ${inputElement.maxLength} caracteres.);
+        } else if (inputElement.validity.typeMismatch && inputElement.type === 'url') {
+            showInputError(formElement, inputElement, 'Por favor, introduce una URL válida.');
+        }
+        return false;
+    } else {
+        hideInputError(formElement, inputElement);
+        return true;
+    }
+}
+
+function toggleButtonState(formElement, buttonElement) {
+    const inputs = Array.from(formElement.querySelectorAll('.popup__input'));
+    const isFormValid = inputs.every(input => input.validity.valid);
+    if (isFormValid) {
+        buttonElement.classList.remove('popup__button_inactive');
+        buttonElement.disabled = false;
+        } else {
+        buttonElement.classList.add('popup__button_inactive');
+        buttonElement.disabled = true;
+    }
+}
+
+function enableValidation(formElement) {
+    const buttonElement = formElement.querySelector('.popup__button');
+    const inputs = Array.from(formElement.querySelectorAll('.popup__input'));
+    toggleButtonState(formElement, buttonElement);
+    inputs.forEach(inputElement => {
+        inputElement.addEventListener('input', () => {
+            checkInputValidity(formElement, inputElement);
+            toggleButtonState(formElement, buttonElement);
+        });
+    });
+}
+
+function resetValidation(formElement) {
+    const inputs = Array.from(formElement.querySelectorAll(`.popup__input`));
+    const buttonElement = formElement.querySelector(`.popup__button`);
+    inputs.forEach(input => hidelmputError(formElement, input));
+    toggleButtonState(formElement, buttonElement);
+}
+
 
 // Abrir modal
 function openModal(modalElement) {
     modalElement.classList.add('popup_is-opened');
+    document.addEventListener(`keydown`, handleEscKey);
 }
 
 // Cerrar modal
 function closeModal(modalElement) {
     modalElement.classList.remove('popup_is-opened');
+    document.removeEventListener(`keydown`, handleEscKey);
+}
+
+function handleOverlayClick(event, modalElement) {
+    if(event.target === modalElement) closeModal(modalElement);
+}
+
+function handleEscKey(event) {
+    if (event.key === `Escape`) {
+        const openPopup = document.querySelector(`.popup_is-opened`);
+        if(openPopup) closeModal(openPopup);
+    }
 }
 
 function fillProfileForm() {
@@ -74,14 +154,17 @@ function fillProfileForm() {
 
 function handleOpenEditModal() {
     fillProfileForm();
+    resetValidation(formEdit);
     openModal(editPopup);
 }
 
 function handleProfileFormSubmit(evt) {
     evt.preventDefault(); 
-    profileTitle.textContent = nameInput.value;
-    profileDescription.textContent = descriptionInput.value;
-    closeModal(editPopup);
+    if (formEdit.checkValidity()) { 
+        profileTitle.textContent = nameInput.value;
+        profileDescription.textContent = descriptionInput.value;
+        closeModal(editPopup);
+    }
 }
 
 // Apariencia del boton Like
@@ -105,19 +188,14 @@ function handleImageClick(link, name) {
 }
 
 function getCardElement(cardData) {
-    // Parametros para los datos incompletos
     const { name = "Titulo", link = "https://via.placeholder.com/300x200?text=Imagen+no+disponible" 
     } = cardData;
-
-    // Obtener Template
-    const cardTemplate = document.querySelector(`#card-template`);
-    const cardElement = cardTemplate.content.firstElementChild.cloneNode(true);
-
-    const cardImage = cardElement.querySelector(`.card__image`);
-    const cardTitle = cardElement.querySelector(`.card__title`);
-    const likeButton = cardElement.querySelector(`.card__like-button`);
-    const deleteButton = cardElement.querySelector(`.card__delete-button`);
-
+    const cardTemplate = document.querySelector('#card-template');
+    const cardElement = cardTemplate.content.cloneNode(true);
+    const cardImage = cardElement.querySelector('.card__image');
+    const cardTitle = cardElement.querySelector('.card__title');
+    const likeButton = cardElement.querySelector('.card__like-button');
+    const deleteButton = cardElement.querySelector('.card__delete-button');
 
     cardImage.src = link;
     cardImage.alt = name;
@@ -135,27 +213,23 @@ function getCardElement(cardData) {
 
 // Funcion para renderizar una tarjeta
 function renderCard(name, link, container) {
-    const cardData = {name, link};
-    const cardElement = getCardElement(cardData);
+    const cardElement = getCardElement ({name, link});
     container.prepend(cardElement);
 }
 
-// Render de todas las tarjetas iniciales
+
 function renderCards() {
-    initialCards.forEach(cardData => {
-        renderCard(cardData.name, cardData.link, cardsList);
-    });
+    initialCards.forEach(card => renderCard(cardData.name, card.link, cardsList));
 }
 
 function handleCardFormSubmit(evt) {
     evt.preventDefault();
-
-    const placeName = document.querySelector(`.popup__input_type_card-name`).value;
-    const linkUrl = document.querySelector(`.popup__input_type_url`).value;
-
-    if(placeName && linkUrl) {
-        renderCard(placeName, linkUrl, cardsList);
+    const placeName = document.querySelector(`#card-name`);
+    const linkUrl = document.querySelector(`#card-url`);
+    if(newCardForm.checkValidity()) {
+        renderCard(placeName.value, linkUrl.value, cardsList);
         evt.target.reset();
+        resetValidation(newCardForm);
         closeModal(newCardPopup);
     }
 }
@@ -169,8 +243,8 @@ editCloseButton.addEventListener('click', () => {
 });
 
 addButton.addEventListener('click', () => {
-    const newCardForm = document.querySelector(`#new-card-form`);
     newCardForm.reset();
+    resetValidation(newCardForm);
     openModal(newCardPopup);
 });
 
@@ -182,34 +256,15 @@ imageCloseButton.addEventListener('click', () => {
     closeModal(imagePopup);
 });
 
-formEdit.addEventListener('submit', handleProfileFormSubmit);
+imageCloseButton.addEventListener(`click`, () => closeModal(imagePopup));
 
+editPopup.addEventListener(`click`, (e) => handleOverlayClick(e, editPopup));
+newCardPopup.addEventListener(`click`, (e) => handleOverlayClick(e, newCardPopup));
+imagePopup.addEventListener(`click`, (e) => handleOverlayClick(e, imagePopup));
 
-const newCardForm = document.querySelector('#new-card-form');
-newCardForm.addEventListener('submit', handleCardFormSubmit);
-
-
-const popups = [editPopup, newCardPopup, imagePopup];
-popups.forEach(popup => {
-    popup.addEventListener('click', (event) => {
-        if (event.target === popup) {
-            closeModal(popup);
-        }
-    });
-});
-
-// ========== CERRAR MODAL CON TECLA ESC ==========
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        const openPopup = document.querySelector('.popup_is-opened');
-        if (openPopup) {
-            closeModal(openPopup);
-        }
-    }
-});
+enableValidation(formEdit);
+const newCardForm = document.querySelector(`new-card-form`);
+enableValidation(newCardForm);
+newCardForm.addEventListener(`submit`, handleCardFormSubmit);
 
 renderCards();
-
-// Me costo muchos dias hacer este JS pero con un poco de ayuda de herramientas hoy en dia se puede hacer.
-// No se si puedan ayudarme con comentarios para poder mejorar aun más mi logica de programación??
-// Libros, paginas, herramientas, etc....??
