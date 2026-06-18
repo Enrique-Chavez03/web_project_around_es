@@ -87,7 +87,7 @@
   border-bottom-color: #ff0000;
 }
 
-.popup__input-eror {
+.popup__input-error {
   display: block;
   font-size: 12px;
   line-height: 1.2;
@@ -99,7 +99,7 @@
   transition: opacity 0.2s;
 }
 
-.popup__input-eror_active {
+.popup__input-error_active {
   opacity: 1;
 }
 

@@ -56,73 +56,6 @@ const profileDescription = document.querySelector('.profile__description');
 
 const cardsList = document.querySelector('.cards__list');
 
-cardsList.innerHTML = ";//Limpiar tarjetas hardcoded"
-
-
-// =========== VALIDACIÓN ==========
-function showInputError(formElement, inputElement, errorMessage) {
-    const errorElement = formElement.querySelector(#${inputElement.id}-error);
-    inputElement.classList.add('popup__input_type_error');
-    errorElement.textContent = errorMessage;
-    errorElement.classList.add('popup__input-error_active');
-}
-
-function hideInputError(formElement, inputElement) {
-    const errorElement = formElement.querySelector(#${inputElement.id}-error);
-    inputElement.classList.remove('popup__input_type_error');
-    errorElement.classList.remove('popup__input-error_active');
-    errorElement.textContent = '';
-}
-
-function checkInputValidity(formElement, inputElement) {
-    f (!inputElement.validity.valid) {
-        if (inputElement.validity.valueMissing) {
-            showInputError(formElement, inputElement, 'Por favor, rellena este campo.');
-        } else if (inputElement.validity.tooShort) {
-            showInputError(formElement, inputElement, Debe tener al menos ${inputElement.minLength} caracteres.);
-        } else if (inputElement.validity.tooLong) {
-            showInputError(formElement, inputElement, Debe tener como máximo ${inputElement.maxLength} caracteres.);
-        } else if (inputElement.validity.typeMismatch && inputElement.type === 'url') {
-            showInputError(formElement, inputElement, 'Por favor, introduce una URL válida.');
-        }
-        return false;
-    } else {
-        hideInputError(formElement, inputElement);
-        return true;
-    }
-}
-
-function toggleButtonState(formElement, buttonElement) {
-    const inputs = Array.from(formElement.querySelectorAll('.popup__input'));
-    const isFormValid = inputs.every(input => input.validity.valid);
-    if (isFormValid) {
-        buttonElement.classList.remove('popup__button_inactive');
-        buttonElement.disabled = false;
-        } else {
-        buttonElement.classList.add('popup__button_inactive');
-        buttonElement.disabled = true;
-    }
-}
-
-function enableValidation(formElement) {
-    const buttonElement = formElement.querySelector('.popup__button');
-    const inputs = Array.from(formElement.querySelectorAll('.popup__input'));
-    toggleButtonState(formElement, buttonElement);
-    inputs.forEach(inputElement => {
-        inputElement.addEventListener('input', () => {
-            checkInputValidity(formElement, inputElement);
-            toggleButtonState(formElement, buttonElement);
-        });
-    });
-}
-
-function resetValidation(formElement) {
-    const inputs = Array.from(formElement.querySelectorAll(`.popup__input`));
-    const buttonElement = formElement.querySelector(`.popup__button`);
-    inputs.forEach(input => hidelmputError(formElement, input));
-    toggleButtonState(formElement, buttonElement);
-}
-
 
 // Abrir modal
 function openModal(modalElement) {
@@ -154,7 +87,7 @@ function fillProfileForm() {
 
 function handleOpenEditModal() {
     fillProfileForm();
-    resetValidation(formEdit);
+    if (formEdit.resetValidation) formEdit.resetValidation();
     openModal(editPopup);
 }
 
@@ -219,8 +152,10 @@ function renderCard(name, link, container) {
 
 
 function renderCards() {
-    initialCards.forEach(card => renderCard(cardData.name, card.link, cardsList));
+    initialCards.forEach(card => renderCard(card.name, card.link, cardsList));
 }
+
+const newCardForm = document.querySelector(`#new-card-form`);
 
 function handleCardFormSubmit(evt) {
     evt.preventDefault();
@@ -229,7 +164,7 @@ function handleCardFormSubmit(evt) {
     if(newCardForm.checkValidity()) {
         renderCard(placeName.value, linkUrl.value, cardsList);
         evt.target.reset();
-        resetValidation(newCardForm);
+        if (newCardForm.resetValidation) newCardForm.resertValidation();
         closeModal(newCardPopup);
     }
 }
@@ -240,11 +175,12 @@ editButton.addEventListener('click', handleOpenEditModal);
 
 editCloseButton.addEventListener('click', () => {
     closeModal(editPopup);
+    formEdit.addEventListener(`submit`, handleProfileFormSubmit);
 });
 
 addButton.addEventListener('click', () => {
     newCardForm.reset();
-    resetValidation(newCardForm);
+    if (newCardForm.resetValidation) newCardForm.resetValidation();
     openModal(newCardPopup);
 });
 
@@ -262,9 +198,18 @@ editPopup.addEventListener(`click`, (e) => handleOverlayClick(e, editPopup));
 newCardPopup.addEventListener(`click`, (e) => handleOverlayClick(e, newCardPopup));
 imagePopup.addEventListener(`click`, (e) => handleOverlayClick(e, imagePopup));
 
-enableValidation(formEdit);
-const newCardForm = document.querySelector(`new-card-form`);
-enableValidation(newCardForm);
 newCardForm.addEventListener(`submit`, handleCardFormSubmit);
+
+
+const validationConfig = {
+    formSelector: `.popup__form`,
+    inputSelector: `.popup__input`,
+    submitButtonSelector: `.popup__button`,
+    inactiveButtonClass: `popup__button_inactive`,
+    inputErrorClass: `popup__input_type_error`,
+    errorClass: `popup__input-error_active`
+};
+
+enableValidation(validationConfig);
 
 renderCards();
