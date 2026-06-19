@@ -144,6 +144,14 @@
   margin: 0;
 }
 
+.popup__button_inactive {
+    background-color: #fff;
+    color: #c4c4c4;
+    border: 1px solid #c4c4c4;
+    pointer-events: none;
+    user-select: none;
+}
+
 @media screen and (max-width: 544px) {
   .popup {
     bottom: 112px;
@@ -164,14 +172,6 @@
 
   .popup__button:hover {
     opacity: 0.8;
-  }
-
-  .popup__button_inactive {
-    background-color: #fff;
-    color: #c4c4c4;
-    border: 1px solid #c4c4c4;
-    pointer-events: none;
-    user-select: none;
   }
 
   .popup__close {

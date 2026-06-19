@@ -121,10 +121,9 @@ function handleImageClick(link, name) {
 }
 
 function getCardElement(cardData) {
-    const { name = "Titulo", link = "https://via.placeholder.com/300x200?text=Imagen+no+disponible" 
-    } = cardData;
+    const { name, link } = cardData;
     const cardTemplate = document.querySelector('#card-template');
-    const cardElement = cardTemplate.content.cloneNode(true);
+    const cardElement = cardTemplate.content.querySelector(`.card`).cloneNode(true);
     const cardImage = cardElement.querySelector('.card__image');
     const cardTitle = cardElement.querySelector('.card__title');
     const likeButton = cardElement.querySelector('.card__like-button');
@@ -164,7 +163,7 @@ function handleCardFormSubmit(evt) {
     if(newCardForm.checkValidity()) {
         renderCard(placeName.value, linkUrl.value, cardsList);
         evt.target.reset();
-        if (newCardForm.resetValidation) newCardForm.resertValidation();
+        if (newCardForm.resetValidation) newCardForm.resetValidation();
         closeModal(newCardPopup);
     }
 }
@@ -172,10 +171,10 @@ function handleCardFormSubmit(evt) {
 // ========== EVENT LISTENERS ==========
 
 editButton.addEventListener('click', handleOpenEditModal);
+formEdit.addEventListener(`submit`, handleProfileFormSubmit);
 
 editCloseButton.addEventListener('click', () => {
     closeModal(editPopup);
-    formEdit.addEventListener(`submit`, handleProfileFormSubmit);
 });
 
 addButton.addEventListener('click', () => {
@@ -191,8 +190,6 @@ newCardCloseButton.addEventListener('click', () => {
 imageCloseButton.addEventListener('click', () => {
     closeModal(imagePopup);
 });
-
-imageCloseButton.addEventListener(`click`, () => closeModal(imagePopup));
 
 editPopup.addEventListener(`click`, (e) => handleOverlayClick(e, editPopup));
 newCardPopup.addEventListener(`click`, (e) => handleOverlayClick(e, newCardPopup));
