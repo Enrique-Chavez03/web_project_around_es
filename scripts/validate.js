@@ -1,5 +1,5 @@
-function enableValidation(formElement, inputElement, config, errorMessage) {
-    const errorElement = formElement.querySelectorAll(`#${inputElement.id}-error`);
+function showInputError(formElement, inputElement, config, errorMessage) {
+    const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
     inputElement.classList.add(config.inputErrorClass);
     errorElement.textContent = errorMessage;
     errorElement.classList.add(config.errorClass);
@@ -16,7 +16,7 @@ function checkInputValidity(formElement, inputElement, config) {
     if (!inputElement.validity.valid) {
         showInputError(formElement, inputElement, config, inputElement.validationMessage);
     } else {
-        hidenInputError(formElement, inputElement, config);
+        hideInputError(formElement, inputElement, config);
     }
 }
 
@@ -32,7 +32,7 @@ function toggleButtonState(inputs, submitButton, config) {
 }
 
 function setEventListeners(formElement, config) {
-    const inputs = Array.form(formElement.querySelectorAll(config.inputSelector));
+    const inputs = Array.from(formElement.querySelectorAll(config.inputSelector));
     const submitButton = formElement.querySelector(config.submitButtonSelector);
     
     toggleButtonState(inputs, submitButton, config);
@@ -58,3 +58,8 @@ function enableValidation(config) {
 }
 
 window.enableValidation = enableValidation;
+
+
+// Muchas gracias por tus observaciones y tus comentarios, me aclara un poco más el por que de las cosas.
+// Aunque sean pequeños pero hace mucha diferencia.
+// Ya que vemos constantemente muchas cosas.
