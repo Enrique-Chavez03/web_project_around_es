@@ -58,8 +58,3 @@ function enableValidation(config) {
 }
 
 window.enableValidation = enableValidation;
-
-
-// Muchas gracias por tus observaciones y tus comentarios, me aclara un poco más el por que de las cosas.
-// Aunque sean pequeños pero hace mucha diferencia.
-// Ya que vemos constantemente muchas cosas.
