@@ -1,6 +1,6 @@
-import Card from "./card.js";
-import FormValidator from "./FormValidator.js";
-import { openModal, closeModal, handleOverlayClick } from "./utils.js";
+import Card from './Card.js';
+import FormValidator from './FormValidator.js';
+import { openModal, closeModal, handleOverlayClick } from './utils.js';
 
 
 const initialCards = [
