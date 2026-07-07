@@ -1,4 +1,4 @@
-import Card from './Card.js';
+import Card from './card.js';
 import FormValidator from './FormValidator.js';
 import { openModal, closeModal, handleOverlayClick } from './utils.js';
 
@@ -63,7 +63,11 @@ const cardsList = document.querySelector('.cards__list');
 
 // Validators
 const editValidator = new FormValidator(validationConfig, formEdit);
-const newCardValidator = new FormValidator(validationConfig, formNewCard);
+editValidator.setEventListeners();  
+
+const newCardValidator = new FormValidator(validationConfig, formNewCard)
+newCardValidator.setEventListeners();
+
 
 // Profile functions
 function fillProfileForm() {
