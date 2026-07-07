@@ -15,7 +15,6 @@ export default class Card {
         this._cardImage.alt = this._name;
         this._cardTitle.textContent = this._name;
 
-        this._setEventListeners();
     }
 
     _getTemplate() {
@@ -26,7 +25,7 @@ export default class Card {
         return template.content.querySelector('.card').cloneNode(true);
     }
 
-    _setEventListeners() {
+    setEventListeners() {
         if (this._likeButton) {
             this._likeButton.addEventListener('click', () => this._handleLikeClick());
         }
@@ -56,5 +55,6 @@ export default class Card {
     }
 }
 
-// Listo creo que era un error en la sintaxis.
-// Quedo pendiente de tus comentarios, gracias.
+// Disculpa por los comentarios, no lo sabia del todo, y nuevamente porponer comentarios.
+// Checo lo de la extención que comentas, no sabia de su uso gracias por la observacion.
+// Esto de la programación es nuevo para mi.

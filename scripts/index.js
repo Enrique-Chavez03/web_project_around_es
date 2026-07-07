@@ -100,6 +100,7 @@ function renderCard(cardData, container) {
   const card = new Card(cardData, '#card-template', handleCardClick);
   const cardElement = card.getCardElement();
   container.prepend(cardElement);
+  card.setEventListeners();
 }
 
 function renderCards() {
