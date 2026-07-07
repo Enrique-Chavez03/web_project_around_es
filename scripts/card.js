@@ -54,7 +54,3 @@ export default class Card {
         return this._element;
     }
 }
-
-// Disculpa por los comentarios, no lo sabia del todo, y nuevamente porponer comentarios.
-// Checo lo de la extención que comentas, no sabia de su uso gracias por la observacion.
-// Esto de la programación es nuevo para mi.

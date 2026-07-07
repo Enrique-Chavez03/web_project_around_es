@@ -116,8 +116,3 @@ Cada formulario es valido por una instancia de FormValidator. La validación es 
 - Clona el repositorio en la máquina local.
 - Abre el archivo index.html en tu navegador preferido (no es necesario un servidor, pero se recomienda usar un servidor local como Live Server de VS Code para evitar problemas con CORS al cargar imágenes externas).
 - Asegúrate de que todos los archivos CSS e imágenes estén en las rutas correctas.
-
-
-### REPOSITORIO EN GITHUB
-
-- https://github.com/Enrique-Chavez03/web_project_around_es.git
