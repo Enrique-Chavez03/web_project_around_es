@@ -41,7 +41,7 @@ const validationConfig = {
   errorClass: "popup__input-error_active",
 };
 
-// ---------- Instancias de clases ----------
+// ---------- Instancias ----------
 
 const userInfo = new UserInfo({
   nameSelector: ".profile__title",
@@ -63,17 +63,18 @@ editProfilePopup.setEventListeners();
 const newCardPopup = new PopupWithForm({
   popupSelector: "#new-card-popup",
   handleFormSubmit: (data) => {
-    const newCard = createCard({
+    const newCardElement = createCard({
       name: data["place-name"],
       link: data.link,
     });
-    cardSection.addItem(newCard);
+    cardSection.addItem(newCardElement);
     newCardPopup.close();
   },
 });
 newCardPopup.setEventListeners();
 
-// Sección de tarjetas con renderer
+// ---------- Sección de tarjetas ----------
+
 const cardSection = new Section(
   {
     items: initialCards,
